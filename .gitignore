@@ -1,0 +1,16 @@
+.DS_Store
+.idea
+.nyc_output
+.settings
+.sublime-workspace
+.tmp
+.vagrant
+*.log
+*.map
+atlassian-ide-plugin.xml
+build
+coverage
+dist
+node_modules
+npm-debug.log
+reports
