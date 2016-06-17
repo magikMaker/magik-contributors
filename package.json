@@ -1,0 +1,28 @@
+{
+  "name": "contributors",
+  "version": "1.0.0",
+  "description": "This adds all the Git contributors to the package.json",
+  "main": "lib/index.js",
+  "scripts": {
+    "release": "node scripts/build.js",
+    "install": "node ./bin/install.js",
+    "uninstall": "node ./bin/uninstall.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@bitbucket.wsrs.net:7999/mk/contributors-in-package.git"
+  },
+  "keywords": [
+    "contributors",
+    "git",
+    "githook",
+    "magikMaker",
+    "npm",
+    "package",
+    "package.json"
+  ],
+  "author": "Bjørn Wikkeling",
+  "license": "MIT",
+  "os" : [ "!win32" ]
+}
