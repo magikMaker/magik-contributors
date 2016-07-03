@@ -1,21 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env node
 
 /**
- * This is run upon installation of the package
+ * This is run upon installation of the package and installs the pre-push
+ * Git hook
  */
-var fs = require('fs');
-var contributors = require('../lib/');
-var hooks = require('../lib/hooks.json');
-
-console.log('\033[4;36m%s\033[0m', 'Contributors');
-console.log('setting up git hook');
-
-contributors.getGitHooksDirectory(function(err, directory){
-    if (err) {
-        console.error('\nError:' + err)
-    } else {
-        // contributors.createHook(directory, 'pre-push', 'prepush');
-        contributors.createCommitMessageHook(directory);
-        console.log('done\n');
-    }
-});
+require('../lib/contributors').createPrePushHook();

@@ -1,4 +1,7 @@
+'use strict';
+
 const exec = require( 'child_process' ).execSync;
+const fs = require('fs');
 const path = require('path');
 
 const distFolderPath = path.join(__dirname, '..', 'dist');
@@ -8,37 +11,38 @@ let json = JSON.parse(fs.readFileSync(packageFilePath, encoding));
 let responseObject;
 
 // first remove dist folder
-responseObject = exec(`rm -r ${distFolderPath}`);
-
-if(responseObject.error) {
-    console.error(`Error while trying to remove the dist folder (${distFolderPath}):\n${responseObject.stderr}`);
-    process.exit(1);
-} else {
-    console.log(`${responseObject.stdout}\n\nremoved dist folder (${distFolderPath}).`);
+try {
+    exec(`rm -r ${distFolderPath}`);
+}
+catch (e) {
 }
 
 // create the dist folder
-responseObject = exec(`mkdir ${distFolderPath}`);
+try{
+    responseObject = exec(`mkdir ${distFolderPath}`);
+}
+catch(e){
+}
 
 if(responseObject.error) {
     console.error(`Error while trying to create the dist folder (${distFolderPath}):\n${responseObject.stderr}`);
     process.exit(1);
-} else {
-    console.log(`${responseObject.stdout}\n\ncreated dist folder (${distFolderPath}).`);
 }
 
 // copy the files we need, ie the src folder and package and readme files
-responseObject = exec(`cp -R ../src/* ${distFolderPath}`);
+responseObject = exec(`cp -R ${path.join(__dirname, '..', 'src', '*')} ${distFolderPath}`);
 
 if(responseObject.error) {
     console.error(`Error while trying to copy the src folder to the dist folder (${distFolderPath}):\n${responseObject.stderr}`);
     process.exit(1);
-} else {
-    console.log(`${responseObject.stdout}\n\nsrc folder copied.`);
 }
 
+// copy readme
+fs.createReadStream(path.join(__dirname, '..', 'README.md')).pipe(fs.createWriteStream('./dist/README.md'));
+
 // handle package.json
-delete js.os;
+delete json.os;
+delete json.engines;
 delete json.scripts.release;
 delete json.scripts['test'];
 
@@ -46,3 +50,5 @@ json.repository.url = 'git@github.com:magikMaker/npm-contributors.git';
 json.bugs = 'https://github.com/magikMaker/npm-contributors/issues';
 json = JSON.stringify(json, null, 2) + '\n';
 fs.writeFileSync(path.join(__dirname, '..', 'dist', 'package.json'), json, {encoding: encoding});
+
+console.log('\ndone...\n');

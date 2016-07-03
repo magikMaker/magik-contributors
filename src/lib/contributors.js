@@ -1,0 +1,186 @@
+'use strict';
+
+// for console, use Error ✖  OK ✔
+
+const path = require('path');
+const fs = require('fs');
+const exec = require('child_process').execSync;
+
+/**
+ * use magik-hooks to handle Git hooks manipulation
+ *
+ * @access private
+ * @link https://github.com/magikMaker/magik-hooks
+ * @type {{create: module.exports.create, remove: module.exports.remove}}
+ */
+const magikHooks = require('magik-hooks');
+
+/**
+ * Identifier used by magik-hooks
+ *
+ * @access private
+ * @type {string}
+ */
+const id = 'magik-contributors';
+
+/**
+ * Constants to change the text colours in `stdout`, use `ANSI_COLOURS.RESET`
+ * to reset to default.
+ *
+ * @example
+ * <code>
+ * process.stdout.write(`${ANSI_COLOURS.YELLOW}text in yellow${ANSI_COLOURS.RESET}`);
+ * </code>
+ * @access private
+ * @type {{BLACK: string, BLUE: string, CYAN: string, DEFAULT: string, GREEN: string, MAGENTA: string, RED: string, RESET: string, WHITE: string, YELLOW: string}}
+ */
+const ANSI_COLOURS = {
+    BLACK: '\x1b[30m',
+    BLUE: '\x1b[34m',
+    CYAN: '\x1b[36m',
+    DEFAULT: '\x1b[0m',
+    GREEN: '\x1b[32m',
+    MAGENTA: '\x1b[35m',
+    RED: '\x1b[31m',
+    RESET: '\x1b[0m',
+    WHITE: '\x1b[37m',
+    YELLOW: '\x1b[33m'
+};
+
+/**
+ * Adds a contributor object to the array of contributors, duplicates are
+ * prevented by checking the email address
+ *
+ * @access private
+ * @param {Object} contributor {name, email, url}
+ * @param {Array} [contributors]
+ * @returns {Array} the array of contributors
+ */
+function addContributor(contributor, contributors){
+    // a person can be a string like this:
+    // Jack Black <j@black.com> (http://jackblack.com)
+    // or an object containing a `name` field with optional `email` and `url` fields
+    var found = false;
+    contributors = contributors || [];
+
+    for(let i = 0, l = contributors.length; i < l; ++i){
+
+        // object found
+        if(contributors[i].email && contributor.email === contributors[i].email){
+
+            if(!contributors[i].name && contributor.name){
+                contributors[i].name = contributor.name;
+            }
+
+            if(!contributors[i].url && contributor.url){
+                contributors[i].url = contributor.url;
+            }
+
+            found = true;
+            break;
+        }
+
+        // string found
+        if(typeof contributors[i] === 'string' && contributors[i].indexOf(`<${contributor.email}>`) > -1){
+            found = true;
+            break;
+        }
+    }
+
+    // add object if not found
+    if(!found){
+        contributors.push(contributor);
+    }
+
+    // sort the contributors by name
+    contributors.sort(function compare(a, b) {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
+
+    return contributors;
+}
+
+/**
+ *
+ * @type {{createPrePushHook: module.exports.createPrePushHook, removePrePushHook: module.exports.removePrePushHook}}
+ */
+module.exports = {
+
+    /**
+     * the actual script to parse out the contributors
+     *
+     * @access public
+     */
+    updateContributors: function parseContributors(){
+        const encoding = 'utf8';
+        const packageFileName = path.join(process.cwd(), 'package.json');
+        let json = JSON.parse(fs.readFileSync(packageFileName));
+        let contributors = json.contributors || [];
+        let gitContributors = exec('git log --pretty="%an %ae%n%cn %ce" | sort | uniq');
+
+        gitContributors = gitContributors.toString().split('\n');
+
+        gitContributors.forEach(function(value) {
+            let matches = value.match(/^(.*)\s([^\s]+)$/);
+
+            if(matches){
+                contributors = addContributor({
+                    name: matches[1] || '',
+                    email: matches[2] || ''
+                }, contributors);
+            }
+        });
+
+        // add contributors array
+        json.contributors = contributors;
+        json = JSON.stringify(json, null, 2) + '\n';
+        fs.writeFileSync(packageFileName, json, {encoding: encoding});
+
+        // add and commit to Git
+        exec(`git add -v ${packageFileName}`);
+
+        console.log('packageFileName', packageFileName);
+
+        // if (exec(`git add -v ${packageFileName}`).code !== 0) {
+        //     process.stdout.write(`${ANSI_COLOURS.RED}\n ✖ Error magik-contributors: Git add failed\n\n${ANSI_COLOURS.RESET}`);
+        //     process.exit(1);
+        // }
+        //
+        // if (exec('git commit -m "added contributors to package.json"').code !== 0) {
+        //     process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✖ Error magik-contributors: Git commit failed\n\n${ANSI_COLOURS.RESET}`);
+        //     process.exit(1);
+        // }
+
+        // console.log('exec', x.toString(), ' -- ', y.toString());
+
+        // notify console
+        process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors: updated contributors in package.json.\n\n${ANSI_COLOURS.RESET}`);
+    },
+
+    /**
+     * Creates a Git pre-push hook that creates a list of all Git contributors,
+     * sorts them and then adds them as contributors to package.json
+     *
+     * @access public
+     * @returns {void}
+     */
+    createPrePushHook: function createPrePushHook() {
+        const command = 'node ' + path.join(__dirname, '..', 'bin', 'update-contributors.js');
+
+        // create the Git hook
+        magikHooks.create('pre-push', command, id);
+
+        process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors installed: pre-push Git hook created.\n\n${ANSI_COLOURS.RESET}`);
+    },
+
+    /**
+     * Removes the pre-push git hook
+     *
+     * @access public
+     * @returns {void}
+     */
+    removePrePushHook: function removePrePushHook() {
+        magikHooks.remove('pre-push', id);
+        process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-commit uninstalled: prepare-commit-msg Git hook removed\n\n${ANSI_COLOURS.RESET}`);
+    }
+};

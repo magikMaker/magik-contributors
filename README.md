@@ -12,29 +12,39 @@ Install this in your project like this:
 Usage
 -----
 After installation, the list of contributors will be automagically updated just 
-before each push.
+before each push. The contributors are taken straight from the Git history
 
 Uninstall
 ---------
 To uninstall, simply type this on the command line:
 `$ npm uninstall --save-dev contributors`
 
-W A R N I N G !!
-================
-This makes use of Git hooks. If you already have a git pre-push hook set up, it
-will be deleted when installing this so please back up your current pre-push 
-hook *before* installing this. 
+License
+=======
 
-After installation, add your own code to the git pre-push hook. Usually the 
-hook files can be found in the folder .`git/hooks/` 
+Copyright (C) 2016 Bjørn Wikkeling (magikMaker)
 
-Also when de-installing, make sure to backup your own pre-push hook first, 
-because de-installing will remove the entire pre-push hook file.
 
-In order to be future proof, make sure to leave everything between and 
-including the comments `#magikContributors` and `#//magikContributors` in 
-tact.
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
 
-In future releases this will be addressed, but for now please do it manually.
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+THE AUTHORS OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
+
+Except as contained in this notice, the name(s) of the above copyright holders 
+shall not be used in advertising or otherwise to promote the sale, use or other 
+dealings in this Software without prior written authorization.
 
  
