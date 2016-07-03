@@ -141,11 +141,11 @@ module.exports = {
 
         console.log('packageFileName', packageFileName);
 
-        // if (exec(`git add -v ${packageFileName}`).code !== 0) {
-        //     process.stdout.write(`${ANSI_COLOURS.RED}\n ✖ Error magik-contributors: Git add failed\n\n${ANSI_COLOURS.RESET}`);
-        //     process.exit(1);
-        // }
-        //
+        if (exec(`git add -v ${packageFileName}`).code !== 0) {
+            process.stdout.write(`${ANSI_COLOURS.RED}\n ✖ Error magik-contributors: Git add failed\n\n${ANSI_COLOURS.RESET}`);
+            process.exit(1);
+        }
+
         // if (exec('git commit -m "added contributors to package.json"').code !== 0) {
         //     process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✖ Error magik-contributors: Git commit failed\n\n${ANSI_COLOURS.RESET}`);
         //     process.exit(1);
