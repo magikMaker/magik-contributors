@@ -19,13 +19,13 @@
     "package",
     "package.json"
   ],
-  "homepage": "https://github.com/magikMaker/npm-contributors",
+  "homepage": "https://github.com/magikMaker/magik-contributors",
   "repository": {
     "type": "git",
-    "url": "git@github.com:magikMaker/npm-contributors.git"
+    "url": "git@github.com:magikMaker/magik-contributors.git"
   },
   "bugs": {
-    "url": "https://github.com/magikMaker/npm-contributors/issues"
+    "url": "https://github.com/magikMaker/magik-contributors/issues"
   },
   "author": "Bjørn Wikkeling",
   "license": "MIT",
