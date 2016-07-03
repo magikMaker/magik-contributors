@@ -1,7 +1,5 @@
 'use strict';
 
-// for console, use Error ✖  OK ✔
-
 const path = require('path');
 const fs = require('fs');
 const exec = require('child_process').execSync;
@@ -101,6 +99,35 @@ function addContributor(contributor, contributors){
 }
 
 /**
+ * Prints a message to stdout, ie the console
+ *
+ * @access private
+ * @param {String} message the message to print to stdout (console)
+ * @param {String} [level=log] optional log level one of `error`, `log` or `warn`
+ * @returns {void}
+ */
+function log(message, level){
+    const levels = {
+        error: {
+            color: 'RED',
+            icon: '✖'
+        },
+        log: {
+            color: 'GREEN',
+            icon: '✔'
+        },
+        warn: {
+            color: 'ORANGE',
+            icon: '✖'
+        }
+    };
+
+    const info = levels[level] || levels.log;
+
+    // write to the console
+    process.stdout.write(`${ANSI_COLOURS[info.color]}\n ${info.icon} ${message}${ANSI_COLOURS.RESET}`);
+}
+/**
  *
  * @type {{createPrePushHook: module.exports.createPrePushHook, removePrePushHook: module.exports.removePrePushHook}}
  */
@@ -137,24 +164,23 @@ module.exports = {
         fs.writeFileSync(packageFileName, json, {encoding: encoding});
 
         // add and commit to Git
-        exec(`git add -v ${packageFileName}`);
-
-        console.log('packageFileName', packageFileName);
-
-        if (exec(`git add ${packageFileName}`).code !== 0) {
-            process.stdout.write(`${ANSI_COLOURS.RED}\n ✖ Error magik-contributors: Git add failed\n\n${ANSI_COLOURS.RESET}`);
-            process.exit(1);
+        try{
+            exec(`git add ${packageFileName}`);
+        } catch(error){
+            log('Error magik-contributors: Git add failed.', 'error');
+            // process.stdout.write(`${ANSI_COLOURS.RED}\n ✖ Error magik-contributors: Git add failed.${ANSI_COLOURS.RESET}`);
         }
 
-        // if (exec('git commit -m "added contributors to package.json"').code !== 0) {
-        //     process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✖ Error magik-contributors: Git commit failed\n\n${ANSI_COLOURS.RESET}`);
-        //     process.exit(1);
-        // }
-
-        // console.log('exec', x.toString(), ' -- ', y.toString());
+        try{
+            exec('git commit -m "magik-contributors: added contributors to package.json"')
+        } catch(error){
+        //    log('Error magik-contributors: Git commit failed', 'error');
+            // process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✖ Error magik-contributors: Git commit failed${ANSI_COLOURS.RESET}`);
+        }
 
         // notify console
-        process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors: updated contributors in package.json.\n\n${ANSI_COLOURS.RESET}`);
+        log('magik-contributors: updated contributors in package.json.');
+        // process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors: updated contributors in package.json.\n${ANSI_COLOURS.RESET}`);
     },
 
     /**
