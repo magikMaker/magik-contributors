@@ -125,7 +125,7 @@ function log(message, level){
     const info = levels[level] || levels.log;
 
     // write to the console
-    process.stdout.write(`${ANSI_COLOURS[info.color]}\n ${info.icon} ${message}${ANSI_COLOURS.RESET}`);
+    process.stdout.write(`${ANSI_COLOURS[info.color]}\n ${info.icon} ${message}\n${ANSI_COLOURS.RESET}`);
 }
 /**
  *
