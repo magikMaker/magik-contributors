@@ -134,9 +134,12 @@ function log(message, level){
 module.exports = {
 
     /**
-     * the actual script to parse out the contributors
+     * the actual script to parse out the contributors, add them to
+     * package.json and then Git add and commit the changes. This is called
+     * from the Git hook pre-push
      *
      * @access public
+     * @returns {void}
      */
     updateContributors: function parseContributors(){
         const encoding = 'utf8';
@@ -158,7 +161,7 @@ module.exports = {
             }
         });
 
-        // add contributors array
+        // add contributors array package.json
         json.contributors = contributors;
         json = JSON.stringify(json, null, 2) + '\n';
         fs.writeFileSync(packageFileName, json, {encoding: encoding});
@@ -168,19 +171,17 @@ module.exports = {
             exec(`git add ${packageFileName}`);
         } catch(error){
             log('Error magik-contributors: Git add failed.', 'error');
-            // process.stdout.write(`${ANSI_COLOURS.RED}\n ✖ Error magik-contributors: Git add failed.${ANSI_COLOURS.RESET}`);
         }
 
         try{
-            exec('git commit -m "magik-contributors: added contributors to package.json"')
+            exec('git commit -m "magik-contributors: added contributors to package.json"');
         } catch(error){
-        //    log('Error magik-contributors: Git commit failed', 'error');
-            // process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✖ Error magik-contributors: Git commit failed${ANSI_COLOURS.RESET}`);
+            // ignore the error, this mostly happens if nothing changed during Git add
+            // log('Error magik-contributors: Git commit failed', 'error');
         }
 
         // notify console
         log('magik-contributors: updated contributors in package.json.');
-        // process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors: updated contributors in package.json.\n${ANSI_COLOURS.RESET}`);
     },
 
     /**
