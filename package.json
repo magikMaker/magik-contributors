@@ -16,7 +16,8 @@
     "githook",
     "magikMaker",
     "npm",
-    "package"
+    "package",
+    "package.json"
   ],
   "homepage": "https://github.com/magikMaker/npm-contributors",
   "repository": {
