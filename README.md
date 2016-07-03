@@ -1,23 +1,34 @@
-Contributors
-------------
+magik-contributors
+==================
+[![NPM version](https://badge.fury.io/js/magik-contributors.svg)](http://badge.fury.io/js/magik-contributors)
 This makes sure that all Git contributors are added to the package.json file. 
 Contributors are taken from actual git commits. Before installing, please read 
-the warning below. 
+the instructions below
 
 Install
 -------
 Install this in your project like this:
-`$ npm install --save-dev contributors`
+```bash
+$ npm install --save-dev magik-contributors
+```
 
 Usage
 -----
 After installation, the list of contributors will be automagically updated just 
-before each push. The contributors are taken straight from the Git history
+before each push. The contributors are taken straight from the Git log
 
 Uninstall
 ---------
 To uninstall, simply type this on the command line:
-`$ npm uninstall --save-dev contributors`
+```bash
+$ npm uninstall --save-dev magik-contributors
+```
+
+Windows
+-------
+Please note that this package only runs on macOS and BSD/*nix type systems. If
+you would like to run this on an unsupported OS, please 
+[create a ticket](https://github.com/magikMaker/magik-contributors/issues).
 
 License
 =======
