@@ -1,11 +1,11 @@
 {
   "name": "magik-contributors",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This adds all the Git contributors to the package.json",
   "main": "./src/lib/index.js",
   "scripts": {
     "release": "node scripts/build.js",
-    "preinstall": "node ./src/bin/install.js",
+    "postinstall": "node ./src/bin/install.js",
     "preuninstall": "node ./src/bin/uninstall.js",
     "test": "eslint ./src && tape './src/**/*.spec.js'"
   },
