@@ -1,6 +1,7 @@
 magik-contributors
 ==================
 [![NPM version](https://badge.fury.io/js/magik-contributors.svg)](http://badge.fury.io/js/magik-contributors)
+
 This makes sure that all Git contributors are added to the package.json file. 
 Contributors are taken from actual git commits. Before installing, please read 
 the instructions below

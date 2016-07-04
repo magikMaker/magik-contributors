@@ -37,7 +37,7 @@ if(responseObject.error) {
     process.exit(1);
 }
 
-// copy readme
+// copy readme file
 fs.createReadStream(path.join(__dirname, '..', 'README.md')).pipe(fs.createWriteStream('./dist/README.md'));
 
 // handle package.json
@@ -46,8 +46,8 @@ delete json.engines;
 delete json.scripts.release;
 delete json.scripts['test'];
 
-json.repository.url = 'git@github.com:magikMaker/npm-contributors.git';
-json.bugs = 'https://github.com/magikMaker/npm-contributors/issues';
+json.repository.url = 'git@github.com:magikMaker/magik-contributors.git';
+json.bugs = 'https://github.com/magikMaker/magik-contributors/issues';
 json = JSON.stringify(json, null, 2) + '\n';
 fs.writeFileSync(path.join(__dirname, '..', 'dist', 'package.json'), json, {encoding: encoding});
 
