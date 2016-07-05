@@ -195,7 +195,7 @@ module.exports = {
         const command = 'node ' + path.join(__dirname, '..', 'bin', 'update-contributors.js');
 
         // create the Git hook
-        magikHooks.create('pre-push', command, id);
+        magikHooks.create('post-commit', command, id);
 
         process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors installed: pre-push Git hook created.\n\n${ANSI_COLOURS.RESET}`);
     },
