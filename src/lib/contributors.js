@@ -22,6 +22,12 @@ const magikHooks = require('magik-hooks');
 const id = 'magik-contributors';
 
 /**
+ * The git hook to use
+ * @type {string}
+ */
+const gitHook = 'post-commit';
+
+/**
  * Constants to change the text colours in `stdout`, use `ANSI_COLOURS.RESET`
  * to reset to default.
  *
@@ -195,9 +201,9 @@ module.exports = {
         const command = 'node ' + path.join(__dirname, '..', 'bin', 'update-contributors.js');
 
         // create the Git hook
-        magikHooks.create('post-commit', command, id);
+        magikHooks.create(gitHook, command, id);
 
-        process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors installed: pre-push Git hook created.\n\n${ANSI_COLOURS.RESET}`);
+        process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors installed: ${gitHook} Git hook created.\n\n${ANSI_COLOURS.RESET}`);
     },
 
     /**
@@ -207,7 +213,7 @@ module.exports = {
      * @returns {void}
      */
     removePrePushHook: function removePrePushHook() {
-        magikHooks.remove('pre-push', id);
-        process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-commit uninstalled: prepare-commit-msg Git hook removed\n\n${ANSI_COLOURS.RESET}`);
+        magikHooks.remove(gitHook, id);
+        process.stdout.write(`${ANSI_COLOURS.GREEN}\n ✔ magik-contributors uninstalled: ${gitHook} Git hook removed\n\n${ANSI_COLOURS.RESET}`);
     }
 };
